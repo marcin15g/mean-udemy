@@ -36,5 +36,6 @@ import { PostListComponent } from './posts/post-list/post-list.component';
   ],
   providers: [],
   bootstrap: [AppComponent]
+  
 })
 export class AppModule { }
