@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-mongoose.connect("mongodb+srv://admin:<PASSWORD>@cluster0-fy6x7.mongodb.net/node-angular?retryWrites=true&w=majority")
+mongoose.connect("mongodb+srv://admin:Rs0xeDJSJRUJ5deK@cluster0-fy6x7.mongodb.net/node-angular?retryWrites=true&w=majority")
     .then(() => {
         console.log('Connected to the database!');
     })
@@ -28,35 +28,31 @@ app.post("/api/posts", (req, res, next) => {
         title: req.body.title,
         content: req.body.content
     });
-    post.save();
-    console.log(post);
-    res.status(201).json({
-        message: "Post added"
+    post.save()
+    .then(createdPost => {       
+        res.status(201).json({
+            message: "Post added",
+            postId: createdPost._id
+        });
     });
+
 });
 
 app.get('/api/posts', (req, res, next) => {
-    const posts = [
-        {
-            id: "123", 
-            title: "First post from back", 
-            content: "Content of the backend post"
-        },
-        {
-            id: "231", 
-            title: "Second post from back", 
-            content: "Content of the backend post"
-        },
-        {
-            id: "321", 
-            title: "Third post from back", 
-            content: "Content of the backend post"
-        }
-    ];
-    res.status(200).json({
-        message: "Posts fetched succesfully!",
-        posts: posts
-    });
+    Post.find()
+        .then(documents => {
+            res.status(200).json({
+                message: "Posts fetched succesfully!",
+                posts: documents
+            });
+        });
+});
+
+app.delete('/api/posts/:id', (req, res, next) => {
+    Post.deleteOne({_id: req.params.id}).then(result => {
+        console.log(result);
+        res.status(200).json({message: 'Post deleted'});
+    })
 });
 
 module.exports = app;
